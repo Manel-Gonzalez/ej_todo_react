@@ -1,21 +1,24 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
+import { useEffect, useState } from "react";
 import "./App.css";
 
-const defaultInfo = [
-  {
-    title: "",
-    id: "",
-    type: "",
-  },
-];
-
 function App() {
-  const [tasques, setTasques] = useState(defaultInfo);
+  const [tasques, setTasques] = useState([]);
   const [inputValue, setInputValue] = useState("");
   const [type, setType] = useState("Familiar");
   const [msg, setMsg] = useState("");
+
+  useEffect(()=> {
+    if(tasques.length !==0){
+      localStorage.setItem("tasques",JSON.stringify(tasques))
+    }
+  },[tasques])
+
+  useEffect(()=>{
+    const tasques = JSON.parse(localStorage.getItem('tasques'))
+    if(tasques){
+      setTasques(tasques)
+    }
+  },[])
 
   function handleChange(e) {
     setInputValue(e.target.value);
@@ -50,7 +53,7 @@ function App() {
       <div className="grid grid-cols-1 w-100 gap-2 sm:grid-cols-2 ">
         <form
           onSubmit={handleSubmit}
-          className="w-100 bg-gray-300/20 grid grid-cols-1 gap-2 p-2 rounded-md"
+          className="w-100 h-fit bg-gray-300/20 grid grid-cols-1 gap-2 p-2 rounded-md"
         >
           <label htmlFor="camp-tasca" className="text-white">
             Nova Tasca
@@ -124,7 +127,7 @@ function App() {
 
         <div className="w-100 bg-gray-300/20 p-2 rounded-md">
           <h1 className="text-white p-2">LListat Tasques</h1>
-          {tasques.map((e) => {
+          {tasques?.map((e) => {
             if (e.type === "Familiar") {
               return (
                 <div className="bg-green-500 p-2 my-1 flex flex-row justify-between rounded-md">
